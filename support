@@ -35,9 +35,9 @@ if [ -n "$PWD" ]; then
 	AUTH="root:$PWD"
 fi
 
-rm -rf controlr
-mkdir controlr
-pushd controlr
+rm -rf controlrs
+mkdir controlrs
+pushd controlrs
 
 # get files
 curl -X GET -u $AUTH "$HTTP/" -o index.html
@@ -48,6 +48,7 @@ curl -X GET -u $AUTH "$HTTP/state/var.ini" -o var.ini
 curl -X GET -u $AUTH "$HTTP/state/disks.ini" -o disks.ini
 curl -X GET -u $AUTH "$HTTP/state/shares.ini" -o shares.ini
 curl -X GET -u $AUTH "$HTTP/state/users.ini" -o users.ini
+curl -X GET -u $AUTH "$HTTP/state/network.ini" -o network.ini
 
 # remove registration info
 awk '!/regFILE=/' var.ini > var.tmp && mv var.tmp var.ini
@@ -68,7 +69,7 @@ perl -pi -e 's/idSb=\"(.*?)\"/idSb=\"generic\"/g' disks.ini
 popd
 
 # create zip file
-zip -r controlr.zip controlr
+zip -r controlr.zip controlrs
 
 echo "ControlR support script finished"
 echo "Please send controlr.zip to the support email"

@@ -2,18 +2,20 @@
 
 This script retrieves control data from an unRAID server, in order to troubleshoot issues in a simulated development environment.
 
-To protect users privacy it strips sensitive data from the data (registration info, disks serial nr, etc).
+To protect users privacy it strips sensitive data (registration info, disks serial nr, etc).
 
 # Instructions
 
 You need to access the server's console in order to execute the script.
 
-Either ssh or telnet into the server and type the following:
+Either ssh or telnet into the server and type the following commands:
 
-- cd /boot
-- curl -fsSL -o support https://raw.githubusercontent.com/jbrodriguez/controlr-support/master/support
-- chmod +x support
-- ./support
+```bash
+$ cd /boot
+$ curl -fsSL -o support https://raw.githubusercontent.com/jbrodriguez/controlr-support/master/support
+$ chmod +x support
+$ ./support
+```
 
 It will prompt for your server (you can enter localhost here), the port and the root password (if you have set it, if you didn’t just press enter).
 

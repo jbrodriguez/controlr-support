@@ -19,21 +19,21 @@ $ ./support
 
 It will prompt for your server (you can enter localhost here), the port and the root password (if you have set it, if you didn’t just press enter).
 
-This will create a /boot/controlr.zip file that you can email to the support address
+This will create a /boot/controlr.zip file that you can email to the support address ![support address](./contact.png)
 
 # Additional note
 
-The sensitive  data that will be removed are  lines that begin with
+The sensitive data that will be removed are lines that begin with
 
-- regFILE=
-- regGUID=
-- regTy=
-- regTo=
-- regTm=
-- regTm2=
-- regGen=
-- flashGUID=
-- flashProduct=
-- flashVendor=
+*   regFILE=
+*   regGUID=
+*   regTy=
+*   regTo=
+*   regTm=
+*   regTm2=
+*   regGen=
+*   flashGUID=
+*   flashProduct=
+*   flashVendor=
 
 and serial ids of your disks

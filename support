@@ -48,7 +48,7 @@ curl -X GET -u $AUTH "$HTTP/state/var.ini" -o var.ini
 curl -X GET -u $AUTH "$HTTP/state/disks.ini" -o disks.ini
 curl -X GET -u $AUTH "$HTTP/state/shares.ini" -o shares.ini
 curl -X GET -u $AUTH "$HTTP/state/users.ini" -o users.ini
-curl -X GET -u $AUTH "$HTTP/state/network.ini" -o network.ini
+curl -X GET -u $AUTH "$HTTP/state/cpuload.ini" -o network.ini
 
 # remove registration info
 awk '!/regFILE=/' var.ini > var.tmp && mv var.tmp var.ini

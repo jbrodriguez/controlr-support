@@ -20,10 +20,18 @@ else
 fi
 # echo "PORT is $PORT"
 
-HTTP="http://$SERVER"
-if [ "$PORT" -ne "80" ]; then
-	HTTP="$HTTP:$PORT"
+if [ "$3" ]; then
+	PROTO=$3
+else
+	PROTO_DEFAULT="http"
+	read -p "Enter protocol [$PROTO_DEFAULT]: " PROTO
+	PROTO=${PROTO:-$PROTO_DEFAULT}
 fi
+
+URL="$PROTO://$SERVER:$PORT"
+# if [ "$PORT" -ne "80" ]; then
+# 	HTTP="$HTTP:$PORT"
+# fi
 #echo "HTTP is $HTTP"
 
 stty -echo
@@ -40,15 +48,17 @@ mkdir controlrs
 pushd controlrs
 
 # get files
-curl -X GET -u $AUTH "$HTTP/" -o index.html
-curl -X GET -u $AUTH "$HTTP/Dashboard" -o dashboard.html
-curl -X GET -u $AUTH "$HTTP/Docker" -o docker.html
-curl -X GET -u $AUTH "$HTTP/VMs" -o vms.html
-curl -X GET -u $AUTH "$HTTP/state/var.ini" -o var.ini
-curl -X GET -u $AUTH "$HTTP/state/disks.ini" -o disks.ini
-curl -X GET -u $AUTH "$HTTP/state/shares.ini" -o shares.ini
-curl -X GET -u $AUTH "$HTTP/state/users.ini" -o users.ini
-curl -X GET -u $AUTH "$HTTP/state/cpuload.ini" -o cpuload.ini
+curl -X GET -k -u $AUTH "$URL/" -o index.html
+curl -X GET -k -u $AUTH "$URL/Dashboard" -o dashboard.html
+curl -X GET -k -u $AUTH "$URL/Docker" -o docker.html
+curl -X GET -k -u $AUTH "$URL/VMs" -o vms.html
+curl -X GET -k -u $AUTH "$URL/plugins/dynamix.docker.manager/include/DockerContainers.php" -o docker65.html
+curl -X GET -k -u $AUTH "$URL/plugins/dynamix.vm.manager/include/VMMachines.php" -o vms65.html
+curl -X GET -k -u $AUTH "$URL/state/var.ini" -o var.ini
+curl -X GET -k -u $AUTH "$URL/state/disks.ini" -o disks.ini
+curl -X GET -k -u $AUTH "$URL/state/shares.ini" -o shares.ini
+curl -X GET -k -u $AUTH "$URL/state/users.ini" -o users.ini
+curl -X GET -k -u $AUTH "$URL/state/cpuload.ini" -o cpuload.ini
 
 # remove registration info
 awk '!/regFILE=/' var.ini > var.tmp && mv var.tmp var.ini
@@ -63,8 +73,8 @@ awk '!/flashProduct=/' var.ini > var.tmp && mv var.tmp var.ini
 awk '!/flashVendor=/' var.ini > var.tmp && mv var.tmp var.ini
 
 # remove disks serial info
-perl -pi -e 's/id=\"(.*?)\"/id=\"generic\"/g' disks.ini
-perl -pi -e 's/idSb=\"(.*?)\"/idSb=\"generic\"/g' disks.ini
+sed -i -E 's/id=\"(.*?)\"/id=\"generic\"/g' disks.ini
+sed -i -E 's/idSb=\"(.*?)\"/idSb=\"generic\"/g' disks.ini
 
 popd
 

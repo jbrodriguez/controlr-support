@@ -11,7 +11,7 @@ You need to access the server's console in order to execute the script.
 Either ssh or telnet into the server and type the following commands:
 
 ```bash
-$ cd /boot
+$ cd /tmp
 $ curl -fsSL -o support https://raw.githubusercontent.com/jbrodriguez/controlr-support/master/support
 $ chmod +x support
 $ ./support
@@ -25,15 +25,15 @@ This will create a /boot/controlr.zip file that you can email to the support add
 
 The sensitive data that will be removed are lines that begin with
 
-*   regFILE=
-*   regGUID=
-*   regTy=
-*   regTo=
-*   regTm=
-*   regTm2=
-*   regGen=
-*   flashGUID=
-*   flashProduct=
-*   flashVendor=
+- regFILE=
+- regGUID=
+- regTy=
+- regTo=
+- regTm=
+- regTm2=
+- regGen=
+- flashGUID=
+- flashProduct=
+- flashVendor=
 
 and serial ids of your disks

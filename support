@@ -43,6 +43,8 @@ if [ -n "$PWD" ]; then
 	AUTH="root:$PWD"
 fi
 
+API="https://$SERVER:2382"
+
 rm -rf controlrs
 mkdir controlrs
 pushd controlrs
@@ -52,6 +54,7 @@ curl -X GET -k -u "$AUTH" "$URL/" -o index.html
 curl -X GET -k -u "$AUTH" "$URL/Dashboard" -o dashboard.html
 curl -X GET -k -u "$AUTH" "$URL/Docker" -o docker.html
 curl -X GET -k -u "$AUTH" "$URL/VMs" -o vms.html
+curl -X GET -k -u "$AUTH" "$API/api/v1/info" -o api.html
 curl -X GET -k -u "$AUTH" "$URL/plugins/dynamix.docker.manager/include/DockerContainers.php" -o docker65.html
 curl -X GET -k -u "$AUTH" "$URL/plugins/dynamix.vm.manager/include/VMMachines.php" -o vms65.html
 curl -X GET -k -u "$AUTH" "$URL/state/var.ini" -o var.ini

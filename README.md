@@ -19,7 +19,7 @@ $ ./support
 
 It will prompt for your server (you can enter localhost here), the port and the root password (if you have set it, if you didn’t just press enter).
 
-This will create a /boot/controlr.zip file that you can email to the support address ![support address](./contact.png)
+This will create a /tmp/controlr.zip file that you can email to the support address ![support address](./contact.png)
 
 # Additional note
 

@@ -28,6 +28,8 @@ else
 	PROTO=${PROTO:-$PROTO_DEFAULT}
 fi
 
+
+
 URL="$PROTO://$SERVER:$PORT"
 # if [ "$PORT" -ne "80" ]; then
 # 	HTTP="$HTTP:$PORT"
@@ -45,26 +47,30 @@ fi
 
 API="https://$SERVER:2382"
 
+cd /tmp
 rm -rf controlrs
 mkdir controlrs
 pushd controlrs
 
-# get files
-curl -X GET -k -u "$AUTH" "$URL/" -o index.html
-curl -X GET -k -u "$AUTH" "$URL/Dashboard" -o dashboard.html
-curl -X GET -k -u "$AUTH" "$URL/Docker" -o docker.html
-curl -X GET -k -u "$AUTH" "$URL/VMs" -o vms.html
-curl -X GET -k -u "$AUTH" "$API/api/v1/info" -o api.html
-curl -X GET -k -u "$AUTH" "$URL/plugins/dynamix.docker.manager/include/DockerContainers.php" -o docker65.html
-curl -X GET -k -u "$AUTH" "$URL/plugins/dynamix.vm.manager/include/VMMachines.php" -o vms65.html
-curl -X GET -k -u "$AUTH" "$URL/state/var.ini" -o var.ini
-curl -X GET -k -u "$AUTH" "$URL/state/disks.ini" -o disks.ini
-curl -X GET -k -u "$AUTH" "$URL/state/shares.ini" -o shares.ini
-curl -X GET -k -u "$AUTH" "$URL/state/users.ini" -o users.ini
-curl -X GET -k -u "$AUTH" "$URL/state/cpuload.ini" -o cpuload.ini
+# login 
+curl -L -b /tmp/cookies -c /tmp/cookies -H "Content-Type: application/x-www-form-urlencoded" -d "username=root&password=$PWD" --insecure -X POST $URL/login
 
-TOKEN=$(curl -X GET -k -u "$AUTH" "$URL/state/var.ini" | grep -Po 'csrf_token="\K.*?(?=")')
-curl -X POST -k -u "$AUTH" -d "action=get_content_json&csrf_token=${TOKEN}" "$URL/plugins/unassigned.devices/UnassignedDevices.php" -o udev.json
+# get files
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/" -o index.html
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/Dashboard" -o dashboard.html
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/Docker" -o docker.html
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/VMs" -o vms.html
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$API/api/v1/info" -o api.html
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/plugins/dynamix.docker.manager/include/DockerContainers.php" -o docker65.html
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/plugins/dynamix.vm.manager/include/VMMachines.php" -o vms65.html
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/var.ini" -o var.ini
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/disks.ini" -o disks.ini
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/shares.ini" -o shares.ini
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/users.ini" -o users.ini
+curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/cpuload.ini" -o cpuload.ini
+
+TOKEN=$(curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/var.ini" | grep -Po 'csrf_token="\K.*?(?=")')
+curl -X POST -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" -d "action=get_content_json&csrf_token=${TOKEN}" "$URL/plugins/unassigned.devices/UnassignedDevices.php" -o udev.json
 
 # remove registration info
 awk '!/regFILE=/' var.ini > var.tmp && mv var.tmp var.ini
@@ -88,6 +94,9 @@ popd
 
 # create zip file
 zip -r controlr.zip controlrs
+
+rm -rf controlrs
+rm cookies
 
 echo "ControlR support script finished"
 echo "Please send controlr.zip to the support email"

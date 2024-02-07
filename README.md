@@ -1,6 +1,6 @@
 # Purpose
 
-This script retrieves control data from an unRAID server, in order to troubleshoot issues in a simulated development environment.
+This script retrieves control data from an Unraid server, in order to troubleshoot issues in a simulated development environment.
 
 To protect users privacy it strips sensitive data (registration info, disks serial nr, etc).
 
@@ -12,7 +12,7 @@ Either ssh or telnet into the server and type the following commands:
 
 ```bash
 $ cd /tmp
-$ curl -fsSL -o support https://raw.githubusercontent.com/jbrodriguez/controlr-support/master/support
+$ curl -fsSL -o support https://raw.githubusercontent.com/jbrodriguez/controlr-support/main/support
 $ chmod +x support
 $ ./support
 ```

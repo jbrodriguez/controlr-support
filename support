@@ -1,51 +1,28 @@
 #!/bin/bash
 
+# Predetermined username
+USERNAME="root"
+
+echo "enter the server IP address or full hostname (without the final slash), e.g.: http://Tower or http://192.168.1.100"
+
+# Check if a URL was provided as a parameter
+if [ -z "$1" ]; then
+    echo "Usage: $0 <url>"
+    exit 1
+fi
+
 echo "ControlR support script starting ..."
 
-if [ "$1" ]; then
-	SERVER=$1
-else
-	SERVER_DEFAULT="Tower"
-	read -p "Enter server name/address [$SERVER_DEFAULT]: " SERVER
-	SERVER=${SERVER:-$SERVER_DEFAULT}
-fi
-# echo "SERVER is $SERVER"
+URL="$1"
 
-if [ "$2" ]; then
-	PORT=$2
-else
-	PORT_DEFAULT="80"
-	read -p "Enter server port [$PORT_DEFAULT]: " PORT
-	PORT=${PORT:-$PORT_DEFAULT}
-fi
-# echo "PORT is $PORT"
+# Prompt the user for the password
+read -sp "Enter password for $USERNAME: " PASSWORD
+echo
 
-if [ "$3" ]; then
-	PROTO=$3
-else
-	PROTO_DEFAULT="http"
-	read -p "Enter protocol [$PROTO_DEFAULT]: " PROTO
-	PROTO=${PROTO:-$PROTO_DEFAULT}
-fi
+# Temporary file for cookies
+COOKIE_FILE=/tmp/cookies
 
-
-
-URL="$PROTO://$SERVER:$PORT"
-# if [ "$PORT" -ne "80" ]; then
-# 	HTTP="$HTTP:$PORT"
-# fi
-#echo "HTTP is $HTTP"
-
-stty -echo
-read -p "Server password [none]: " PWD; echo
-stty echo
-
-AUTH="root"
-if [ -n "$PWD" ]; then
-	AUTH="root:$PWD"
-fi
-
-API="https://$SERVER:2382"
+API="$URL:2382"
 
 cd /tmp
 rm -rf controlrs
@@ -53,24 +30,24 @@ mkdir controlrs
 pushd controlrs
 
 # login 
-curl -L -b /tmp/cookies -c /tmp/cookies -H "Content-Type: application/x-www-form-urlencoded" -d "username=root&password=$PWD" --insecure -X POST $URL/login
+curl -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" -H "Content-Type: application/x-www-form-urlencoded" -d "username=$USERNAME&password=$PASSWORD" --insecure -X POST $URL/login
 
 # get files
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/" -o index.html
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/Dashboard" -o dashboard.html
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/Docker" -o docker.html
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/VMs" -o vms.html
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$API/api/v1/info" -o api.html
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/plugins/dynamix.docker.manager/include/DockerContainers.php" -o docker65.html
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/plugins/dynamix.vm.manager/include/VMMachines.php" -o vms65.html
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/var.ini" -o var.ini
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/disks.ini" -o disks.ini
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/shares.ini" -o shares.ini
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/users.ini" -o users.ini
-curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/cpuload.ini" -o cpuload.ini
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/" -o index.html
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/Dashboard" -o dashboard.html
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/Docker" -o docker.html
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/VMs" -o vms.html
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$API/api/v1/info" -o api.html
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/plugins/dynamix.docker.manager/include/DockerContainers.php" -o docker65.html
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/plugins/dynamix.vm.manager/include/VMMachines.php" -o vms65.html
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/state/var.ini" -o var.ini
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/state/disks.ini" -o disks.ini
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/state/shares.ini" -o shares.ini
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/state/users.ini" -o users.ini
+curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/state/cpuload.ini" -o cpuload.ini
 
-TOKEN=$(curl -X GET -L -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" "$URL/state/var.ini" | grep -Po 'csrf_token="\K.*?(?=")')
-curl -X POST -b /tmp/cookies -c /tmp/cookies --insecure -k -u "$AUTH" -d "action=get_content_json&csrf_token=${TOKEN}" "$URL/plugins/unassigned.devices/UnassignedDevices.php" -o udev.json
+TOKEN=$(curl -X GET -L -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" "$URL/state/var.ini" | grep -Po 'csrf_token="\K.*?(?=")')
+curl -X POST -b "$COOKIE_FILE" -c "$COOKIE_FILE" --insecure -k -u "$USERNAME:$PASSWORD" -d "action=get_content_json&csrf_token=${TOKEN}" "$URL/plugins/unassigned.devices/UnassignedDevices.php" -o udev.json
 
 # remove registration info
 awk '!/regFILE=/' var.ini > var.tmp && mv var.tmp var.ini

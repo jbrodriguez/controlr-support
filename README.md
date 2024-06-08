@@ -17,7 +17,16 @@ $ chmod +x support
 $ ./support
 ```
 
-It will prompt for your server (you can enter localhost here), the port and the root password (if you have set it, if you didn’t just press enter).
+It will prompt for your host name or address and password
+
+> [!IMPORTANT]
+> Enter the full host name or address (but don't include the trailing slash),
+> you can copy/paste the url in the browser, however just include the servername
+> for example:
+>
+> - http://Tower
+> - http://192.168.1.100
+> - https://myserver.local
 
 This will create a /tmp/controlr.zip file that you can email to the support address ![support address](./contact.png)
 
